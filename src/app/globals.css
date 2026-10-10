@@ -8,14 +8,23 @@
   --color-wine: #2e0713;
   --color-brand: #b5202f;
   --color-cream: #fff4d6;
-  --font-display: var(--font-fraunces);
-  --font-sans: var(--font-dmsans);
+  --font-display: var(--font-playfair);
+  --font-script: var(--font-kaushan);
 }
 
+.font-display { font-weight: 800; }
 html { scroll-behavior: smooth; }
 body {
-  background: linear-gradient(180deg, #ffe08a 0%, #fff4d6 40%, #fff4d6 100%);
+  background:
+    radial-gradient(circle at 12% 8%, #fff0b8 0, transparent 38%),
+    radial-gradient(circle at 88% 28%, rgba(245, 158, 11, 0.35) 0, transparent 45%),
+    linear-gradient(180deg, #f9cf45 0%, #fde48e 50%, #fff2c8 100%);
   color: #2e0713;
-  font-family: var(--font-dmsans), sans-serif;
+  font-family: var(--font-poppins), sans-serif;
+  font-weight: 400;
 }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+@keyframes marquee { to { transform: translateX(-50%); } }
+.marquee { animation: marquee 45s linear infinite; }
+@media (prefers-reduced-motion: reduce) { .marquee { animation: none; } }
