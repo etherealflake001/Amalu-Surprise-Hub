@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { services, WHATSAPP } from "@/lib/config";
 
@@ -15,6 +15,12 @@ const fields = [
 
 export default function BookingForm() {
   const [done, setDone] = useState(false);
+  const [type, setType] = useState(services[0].name);
+  useEffect(() => {
+    const h = (e: Event) => setType((e as CustomEvent<string>).detail);
+    window.addEventListener("pick-call", h);
+    return () => window.removeEventListener("pick-call", h);
+  }, []);
 
   function submit(e: React.SyntheticEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -41,11 +47,13 @@ export default function BookingForm() {
     <form onSubmit={submit} className="mt-10 grid gap-5 rounded-3xl bg-maroon p-6 text-cream md:grid-cols-2 md:p-10">
       {fields.map(([n, l, t]) => (
         <label key={n} className="block text-sm">{l}
-          <input required name={n} type={t} className={input} />
+          <input required name={n} type={t} maxLength={t === "tel" ? 20 : 60}
+            {...(t === "tel" ? { pattern: "\\+?[0-9 ]{7,20}", inputMode: "tel" as const, title: "Digits only, for example 08012345678" } : {})}
+            className={input} />
         </label>
       ))}
       <label className="block text-sm">Call type
-        <select name="type" className={input}>
+        <select name="type" value={type} onChange={(e) => setType(e.target.value)} className={input}>
           {services.map((s) => <option key={s.name} className="bg-wine">{s.name}</option>)}
         </select>
       </label>
@@ -56,7 +64,7 @@ export default function BookingForm() {
         </select>
       </label>
       <label className="block text-sm md:col-span-2">What should the call say?
-        <textarea name="note" rows={4} className={input} />
+        <textarea name="note" rows={4} maxLength={600} className={input} />
       </label>
       <motion.button type="submit" whileTap={{ scale: 0.97 }}
         className="rounded-full bg-gold px-8 py-4 font-semibold text-wine transition hover:bg-amber md:col-span-2 md:justify-self-start">
